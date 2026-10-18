@@ -1,0 +1,20 @@
+services:
+  tunnels:
+    build: .
+    container_name: ssh-tunnels
+    init: true                  # tini подбирает завершившиеся процессы ssh, иначе они остаются "зомби"
+    restart: unless-stopped     # поднимается вместе с Docker
+    environment:
+      TUNNEL_PORTS: ${TUNNEL_PORTS:-1100-1199}
+    ports:
+      # Всё открыто только на 127.0.0.1: с других компьютеров сети панель и туннели не видны
+      - "127.0.0.1:${PANEL_PORT:-8099}:8099"
+      - "127.0.0.1:${TUNNEL_PORTS:-1100-1199}:${TUNNEL_PORTS:-1100-1199}"
+    volumes:
+      - ./data:/data            # туннели, пароли, known_hosts
+      - ./keys:/keys:ro         # ssh-ключи, если вход по ключу
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8099/api/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3

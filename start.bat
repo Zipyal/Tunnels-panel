@@ -1,30 +1,19 @@
 @echo off
 chcp 65001 >nul
 cd /d "%~dp0"
-title SSH-туннели
 
-where php >nul 2>nul
+docker info >nul 2>nul
 if errorlevel 1 (
-  echo PHP не найден. Устанавливаю одной командой через winget...
+  echo Docker не запущен или не установлен.
   echo.
-  winget install --id PHP.PHP.8.3 -e --accept-source-agreements --accept-package-agreements
-  echo.
-  echo Если установка прошла успешно: закройте это окно и запустите start.bat ещё раз.
+  echo Если не установлен, выполните в консоли одну команду:
+  echo   winget install -e --id Docker.DockerDesktop
+  echo Потом перезагрузите компьютер и запустите Docker Desktop.
   pause
-  exit /b
+  exit /b 1
 )
 
-where ssh >nul 2>nul
-if errorlevel 1 (
-  echo Не найден ssh. Откройте PowerShell от имени администратора и выполните:
-  echo   Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
-  echo Потом запустите start.bat ещё раз.
-  pause
-  exit /b
-)
+docker compose up -d --build
+if errorlevel 1 ( pause & exit /b 1 )
 
-echo Панель открывается в браузере. Это окно НЕ закрывайте, пока работаете.
-echo Остановить панель: Ctrl+C. Туннели при этом продолжат работать.
-echo.
-php tunnels.php
-pause
+start "" http://localhost:8099
