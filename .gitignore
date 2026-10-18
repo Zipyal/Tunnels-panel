@@ -1,0 +1,7 @@
+# сборки и личные данные
+*.exe
+ssh-tunnels-linux
+ssh-tunnels-mac-*
+dist/
+tunnels-data/
+panel.log

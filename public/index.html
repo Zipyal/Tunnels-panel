@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SSH-туннели</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>SSH-туннели <small id="count"></small></h1>
+    <input id="q" placeholder="Поиск…  ( / )" autocomplete="off">
+    <button id="upall">Подключить все</button>
+    <button id="downall" class="bad">Отключить все</button>
+    <button id="imp">Импорт</button>
+    <button id="add" class="pri">+ Добавить</button>
+  </header>
+  <form class="me" id="me" autocomplete="off">
+    <div class="me-title">Ваши данные для входа <small>подставляются во все туннели</small></div>
+    <div class="me-row">
+      <label for="login">Логин<input id="login" placeholder="например, ivanov"></label>
+      <label for="gpw">Пароль SSH
+        <span class="pw"><input id="gpw" type="password" autocomplete="new-password"><button type="button" id="geye">Показать</button></span>
+      </label>
+      <button type="submit" class="pri" id="mesave">Сохранить</button>
+    </div>
+  </form>
+  <div class="banner ok" id="bannerok" hidden>
+    <div><b>ssh установлен.</b> <span id="okver"></span> Теперь туннели можно подключать.</div>
+    <button id="okhide">Понятно</button>
+  </div>
+  <div class="banner" id="banner" hidden>
+    <div><b>Не найден ssh.</b> Без него туннели не запустятся.</div>
+    <div class="banner-row">
+      <button id="install" class="pri">Установить ssh</button>
+      <span id="installmsg"></span>
+    </div>
+    <details>
+      <summary>Или вручную</summary>
+      Откройте PowerShell от имени администратора и выполните:
+      <code id="bannercmd"></code>
+      <button id="bannercopy">Копировать команду</button>
+    </details>
+  </div>
+  <div class="list" id="list"></div>
+</div>
+
+<!-- Добавить / изменить туннель -->
+<dialog id="dlg">
+  <form id="f" autocomplete="off">
+    <h2 id="dtitle">Туннель</h2>
+    <label for="cmd">Команда (вставьте как есть из блокнота)</label>
+    <textarea id="cmd" rows="2" placeholder="ssh -f -N -L 1111:11.11.1.11:222 login@333.333.33.33 -p22" spellcheck="false"></textarea>
+    <div class="hint" id="hint"></div>
+    <div class="hint">Вместо логина можно написать <code>{login}</code>: он подставится из поля «Логин» вверху страницы.</div>
+    <label for="name">Название</label>
+    <input id="name" placeholder="Например: CRM тест">
+    <label for="pw">Пароль SSH (пусто: берётся общий пароль вверху страницы)</label>
+    <div class="pw"><input id="pw" type="password" autocomplete="new-password"><button type="button" id="eye">Показать</button></div>
+    <label for="url">Ссылка для входа на сайт</label>
+    <input id="url" placeholder="по умолчанию http://localhost:ЛОКАЛЬНЫЙ_ПОРТ" spellcheck="false">
+    <div class="foot">
+      <button type="button" id="del" class="bad sp">Удалить</button>
+      <button type="button" id="cancel">Отмена</button>
+      <button type="submit" class="pri">Сохранить</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Импорт списка команд -->
+<dialog id="idlg">
+  <form id="if" autocomplete="off">
+    <h2>Импорт из блокнота</h2>
+    <div class="hint">По строке на туннель. Либо просто команда, либо<br><code>название | команда | пароль | ссылка</code></div>
+    <textarea id="itext" rows="9" spellcheck="false" placeholder="CRM | ssh -f -N -L 1111:11.11.1.11:222 login@333.333.33.33 -p22 | secret | localhost:222"></textarea>
+    <div class="hint e" id="ihint"></div>
+    <button type="button" id="exportlist" class="ghost">Скопировать весь список (без паролей) для коллеги</button>
+    <div class="foot"><span class="sp"></span><button type="button" id="icancel">Отмена</button><button type="submit" class="pri">Импортировать</button></div>
+  </form>
+</dialog>
+
+<footer><span id="sshinfo"></span> <button id="quit" class="ghost">Выйти и отключить все туннели</button></footer>
+<div id="toast"></div>
+<script src="/app.js"></script>
+</body>
+</html>
